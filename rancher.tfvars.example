@@ -1,0 +1,56 @@
+// Just an example file of what you can do with this
+
+aws_env_name = "dev"
+
+aws_region = "us-west-2"
+
+# Rancher OS v0.6.1 AMI for us-west-2 region
+aws_ami_id = "ami-1ed3007e"
+
+# Go Big or Go Home
+aws_instance_type = "m4.xlarge"
+
+// Network subnets...
+// 10.0.0.0/16:
+//    - 10.0.0.0/18 - AZA 
+//          10.0.0.0/19 - Private
+//          10.0.32.0/19 - Public
+//    - 10.0.64.0/18 - AZB 
+//          10.0.64.0/19 - Private
+//          10.0.96.0/19 - Public
+//    - 10.0.128.0/18 - AZC 
+//          10.0.128.0/19 - Private
+//          10.0.160.0/19 - Public
+aws_vpc_cidr = "10.0.0.0/16"
+
+aws_private_subnet_cidrs = "10.0.0.0/24,10.0.64.0/24,10.0.128.0/24"
+
+aws_public_subnet_cidrs = "10.0.32.0/24,10.0.96.0/24,10.0.160.0/24"
+
+aws_subnet_azs = "us-west-2a,us-west-2b,us-west-2c"
+
+aws_nat_name = "nat"
+
+# More Memory, less problems
+aws_rds_instance_class = "db.m4.xlarge"
+
+aws_ssh_key_name = "<SSH_KEY>"
+
+aws_access_key = "ACCESS_KEY"
+
+aws_secret_key = "SECRET_KEY"
+
+database_encrypted_password = "IV:PWD"
+
+registration_url = "https://love.rancher.com"
+
+rancher_version = "rancher/server:v1.2.0-pre3"
+
+encryption_key = "CryptoKEY"
+
+// Doesn't do anything yet.
+ca_chain = ""
+
+server_private_key = "base64 encoded key"
+
+server_cert = "base64 encoded cert"
