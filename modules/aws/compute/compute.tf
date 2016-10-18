@@ -12,6 +12,7 @@ data "template_file" "user_data" {
     server_cert        = "${var.server_cert}"
     server_private_key = "${var.server_private_key}"
     registration_url   = "${var.registration_url}"
+    rancher_version    = "${var.rancher_version}"
   }
 }
 

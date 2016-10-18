@@ -33,11 +33,12 @@ module "compute" {
   load_balancers  = "${module.networking.public_elbs}"
   security_groups = "${module.networking.compute_security_groups}"
 
-  database_endpoint = "${module.database.endpoint}"
+  database_endpoint = "${element(split(":", module.database.endpoint),0)}"
   database_name     = "${module.database.name}"
   database_user     = "${module.database.username}"
   database_password = "${var.database_encrypted_password}"
   encryption_key    = "${var.encryption_key}"
+  rancher_version   = "${var.rancher_version}"
 
   registration_url   = "${var.registration_url}"
   ca_chain           = "${var.ca_chain}"

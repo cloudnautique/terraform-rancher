@@ -41,3 +41,7 @@ variable "aws_secret_key" {}
 variable "database_encrypted_password" {}
 
 variable "registration_url" {}
+
+variable "rancher_version" {
+  default = "rancher/server"
+}

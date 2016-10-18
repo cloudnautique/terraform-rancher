@@ -43,3 +43,5 @@ variable "server_cert" {}
 variable "server_private_key" {}
 
 variable "registration_url" {}
+
+variable "rancher_version" {}

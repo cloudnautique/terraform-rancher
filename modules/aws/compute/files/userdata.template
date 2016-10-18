@@ -1,21 +1,47 @@
 #cloud-config
+write_files:
+  - path: /var/lib/rancher/etc/server.conf
+    content: |
+      export CATTLE_HA_CLUSTER_SIZE=${cluster_size}
+      export CATTLE_HA_HOST_REGISTRATION_URL=${registration_url}
+      export CATTLE_HA_CONTAINER_PREFIX=rancher-ha-
+      export CATTLE_DB_CATTLE_MYSQL_HOST=${database_endpoint}
+      export CATTLE_DB_CATTLE_MYSQL_PORT=3306
+      export CATTLE_DB_CATTLE_MYSQL_NAME=${database_name}
+      export CATTLE_DB_CATTLE_USERNAME=${database_user}
+      export CATTLE_DB_CATTLE_PASSWORD=${database_password}
+      export CATTLE_HA_PORT_REDIS=6379
+      export CATTLE_HA_PORT_SWARM=2376
+      export CATTLE_HA_PORT_HTTP=80
+      export CATTLE_HA_PORT_HTTPS=443
+      export CATTLE_HA_PORT_PP_HTTP=81
+      export CATTLE_HA_PORT_PP_HTTPS=444
+      export CATTLE_HA_PORT_ZK_CLIENT=2181
+      export CATTLE_HA_PORT_ZK_QUORUM=2888
+      export CATTLE_HA_PORT_ZK_LEADER=3888
+      # Uncomment below to force HA enabled and not require one to set it in the UI
+      export CATTLE_HA_ENABLED=true
+
+      if [ ! -e /var/lib/rancher/etc/ssl/server-cert.pem ];then
+         echo "${server_cert}" | base64 -d > /var/lib/rancher/etc/ssl/server-cert.pem
+      fi
+
+      if [ ! -e /var/lib/rancher/etc/ssl/server-key.pem ];then
+         echo "${server_private_key}" | base64 -d > /var/lib/rancher/etc/ssl/server-key.pem
+      fi
+
+      touch /var/lib/rancher/etc/ssl/ca.crt
+  - path: /var/lib/rancher/etc/ssl/README.txt
+    content: "CA crt will be pulled into this directory"
+  - path: /var/lib/rancher/etc/server/encryption.key
+    content: ${encryption_key}
 rancher:
   services:
-    rancher-ha-init:
-      image: cloudnautique/rancher-ha-init:v0.1.2
+    rancher-ha:
+      image: ${rancher_version}
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
-        - /var/lib/rancher:/var/lib/rancher
+        - /var/lib/rancher/etc:/var/lib/rancher/etc
       net: host
-      environment:
-        DB_HOST: ${database_endpoint}
-        DB_USER: ${database_user}
-        DB_PASS: ${database_password}
-        DB_NAME: ${database_name}
-        REGISTRATION_URL: ${registration_url}
-        CLUSTER_SIZE: ${cluster_size}
-        CERT: ${server_cert}
-        KEY: ${server_private_key}
-        ENCRYPTION_KEY: ${encryption_key}
-        CERT_CHAIN: ${ca_chain}
-      command: /rancher-ha-init.sh rancher/server:v1.2.0-pre3
+      privileged: true
+      command: ha
