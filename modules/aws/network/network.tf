@@ -40,7 +40,7 @@ module "security_groups" {
 
 module "elb" {
   source          = "./elb"
-  name            = "${var.vpc_name}-elb"
+  name            = "${var.vpc_name}"
   public_subnets  = "${module.public_subnets.subnet_ids}"
   security_groups = "${module.security_groups.elb_sg_id}"
 }

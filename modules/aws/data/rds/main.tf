@@ -35,7 +35,7 @@ resource "aws_db_instance" "main_rds_instance" {
 }
 
 resource "aws_db_subnet_group" "main_db_subnet_group" {
-  name        = "${var.rds_instance_name}_subnetgrp"
+  name        = "${var.rds_instance_name}-subnetgroup"
   description = "RDS subnet group"
   subnet_ids  = ["${var.db_subnet_ids}"]
 }

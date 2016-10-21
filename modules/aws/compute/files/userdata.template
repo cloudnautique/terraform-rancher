@@ -36,6 +36,8 @@ write_files:
   - path: /var/lib/rancher/etc/server/encryption.key
     content: ${encryption_key}
 rancher:
+  services_include:
+    kernel-headers: true
   services:
     rancher-ha:
       image: ${rancher_version}

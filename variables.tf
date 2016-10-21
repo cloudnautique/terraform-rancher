@@ -38,6 +38,10 @@ variable "aws_access_key" {}
 
 variable "aws_secret_key" {}
 
+variable "database_password" {
+  default = "cattlepassword"
+}
+
 variable "database_encrypted_password" {}
 
 variable "registration_url" {}
