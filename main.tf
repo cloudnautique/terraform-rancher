@@ -15,14 +15,37 @@ module "networking" {
   azs                  = "${var.aws_subnet_azs}"
 }
 
-module "database" {
-  source             = "./modules/aws/data"
-  rds_instance_name  = "${var.aws_env_name}-rancher-db"
-  database_password  = "${var.database_password}"
+#module "database" {
+
+#  source = "./modules/aws/data/rds_backed"
+
+#
+
+#  rds_instance_name  = "${var.aws_env_name}-rancher-db"
+
+#  database_password  = "${var.database_password}"
+
+#  vpc_id             = "${module.networking.vpc_id}"
+
+#  source_cidr_blocks = "${concat(split(",",var.aws_public_subnet_cidrs),split(",", var.aws_private_subnet_cidrs))}"
+
+#  rds_instance_class = "${var.aws_rds_instance_class}"
+
+#  db_subnet_ids      = "${concat(split(",", module.networking.private_subnet_ids))}"
+
+#}
+
+module "ec2_database" {
+  source = "./modules/aws/data/ec2_backed"
+
+  name               = "${var.aws_env_name}"
+  availability_zone  = "${element(split(",", var.aws_subnet_azs), 0)}"
   vpc_id             = "${module.networking.vpc_id}"
+  ami_id             = "${var.aws_ami_id}"
+  instance_type      = "${var.aws_instance_type}"
   source_cidr_blocks = "${concat(split(",",var.aws_public_subnet_cidrs),split(",", var.aws_private_subnet_cidrs))}"
-  rds_instance_class = "${var.aws_rds_instance_class}"
-  db_subnet_ids      = "${concat(split(",", module.networking.private_subnet_ids))}"
+  database_password  = "${var.database_password}"
+  subnet_id          = "${element(split(",", module.networking.private_subnet_ids), 0)}"
 }
 
 module "compute" {
@@ -35,9 +58,9 @@ module "compute" {
   load_balancers  = "${module.networking.public_elbs}"
   security_groups = "${module.networking.compute_security_groups}"
 
-  database_endpoint = "${element(split(":", module.database.endpoint),0)}"
-  database_name     = "${module.database.name}"
-  database_user     = "${module.database.username}"
+  database_endpoint = "${element(split(":", module.ec2_database.endpoint),0)}"
+  database_name     = "${module.ec2_database.name}"
+  database_user     = "${module.ec2_database.username}"
   database_password = "${var.database_encrypted_password}"
   encryption_key    = "${var.encryption_key}"
   rancher_version   = "${var.rancher_version}"
@@ -60,7 +83,7 @@ output "vpc_id" {
 }
 
 output "db_endpoint" {
-  value = "${module.database.endpoint}"
+  value = "${module.ec2_database.endpoint}"
 }
 
 output "userdata" {
