@@ -38,14 +38,17 @@ module "networking" {
 module "ec2_database" {
   source = "./modules/aws/data/ec2_backed"
 
-  name               = "${var.aws_env_name}"
-  availability_zone  = "${element(split(",", var.aws_subnet_azs), 0)}"
-  vpc_id             = "${module.networking.vpc_id}"
-  ami_id             = "${var.aws_ami_id}"
-  instance_type      = "${var.aws_instance_type}"
-  source_cidr_blocks = "${concat(split(",",var.aws_public_subnet_cidrs),split(",", var.aws_private_subnet_cidrs))}"
-  database_password  = "${var.database_password}"
-  subnet_id          = "${element(split(",", module.networking.private_subnet_ids), 0)}"
+  name                = "${var.aws_env_name}"
+  availability_zone   = "${element(split(",", var.aws_subnet_azs), 0)}"
+  vpc_id              = "${module.networking.vpc_id}"
+  ami_id              = "${var.aws_ami_id}"
+  instance_type       = "${var.aws_instance_type}"
+  source_cidr_blocks  = "${concat(split(",",var.aws_public_subnet_cidrs),split(",", var.aws_private_subnet_cidrs))}"
+  database_password   = "${var.database_password}"
+  subnet_id           = "${element(split(",", module.networking.private_subnet_ids), 0)}"
+  primary_snapshot_id = "${var.primary_snapshot_id}"
+  backup_snapshot_id  = "${var.backup_snapshot_id}"
+  ip_address          = "${var.ec2_database_ip_address}"
 }
 
 module "compute" {

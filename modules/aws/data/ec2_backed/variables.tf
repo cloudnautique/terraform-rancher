@@ -29,3 +29,23 @@ variable "database_password" {
 variable "database_name" {
   default = "cattle"
 }
+
+variable "backup_user" {
+  default = "bkupuser"
+}
+
+variable "backup_user_password" {
+  default = "supers3cret"
+}
+
+variable "primary_snapshot_id" {
+  default = ""
+}
+
+variable "backup_snapshot_id" {
+  default = ""
+}
+
+variable "ip_address" {
+  default = ""
+}

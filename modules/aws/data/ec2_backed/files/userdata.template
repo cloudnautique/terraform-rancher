@@ -202,13 +202,45 @@ write_files:
       set -e
 
       mkdir -p /host$${2}
-      if [ "$(blkid ${1}|grep ext4|wc -l)" -eq "0" ]; then
+      if [ "$(blkid $${1}|grep ext4|wc -l)" -eq "0" ]; then
         mkfs.ext4 $${1}
       fi
 
       if ! grep $${1} /proc/mounts; then
         mount -t ext4 $${1} /host$${2}
       fi
+  - path: /opt/rancher/etc/container_watchers
+    content: |
+      xtrabackup.restart.0:05
+      xtrabackup.restart.1:05
+      xtrabackup.restart.2:05
+      xtrabackup.restart.3:05
+      xtrabackup.restart.4:05
+      xtrabackup.restart.5:05
+      xtrabackup.restart.6:05
+      xtrabackup.restart.7:05
+      xtrabackup.restart.8:05
+      xtrabackup.restart.9:05
+      xtrabackup.restart.10:05
+      xtrabackup.restart.11:05
+      xtrabackup.restart.12:05
+      xtrabackup.restart.13:05
+      xtrabackup.restart.14:05
+      xtrabackup.restart.15:05
+      xtrabackup.restart.16:05
+      xtrabackup.restart.17:05
+      xtrabackup.restart.18:05
+      xtrabackup.restart.19:05
+      xtrabackup.restart.20:05
+      xtrabackup.restart.21:05
+      xtrabackup.restart.22:05
+      xtrabackup.restart.23:05
+  - path: /opt/rancher/etc/backup_user.sql
+    content: |
+      CREATE USER '${backup_user}'@'127.0.0.1' IDENTIFIED BY '${backup_user_password}';
+      GRANT RELOAD, LOCK TABLES, PROCESS, REPLICATION CLIENT ON *.* TO
+       '${backup_user}'@'127.0.0.1';
+      FLUSH PRIVILEGES;
 rancher:
   services:
     format_mount_primary:
@@ -221,7 +253,7 @@ rancher:
         - /:/host:shared
       privileged: true
       labels:
-        io.rancher.os.before: mariadb
+        io.rancher.os.before: mariadb,extrabackup
     format_mount_backup:
       image: rancher/os:v0.7.0
       entrypoint: /host/opt/rancher/bin/format_and_mount.sh
@@ -232,7 +264,14 @@ rancher:
         - /:/host:shared
       privileged: true
       labels:
-        io.rancher.os.before: mariadb
+        io.rancher.os.before: mariadb,xtrabackup
+    restart-o-matic:
+      image: cloudnautique/restart-o-matic
+      volumes:
+        - /opt/rancher/etc/container_watchers:/opt/container_watchers
+        - /var/run/docker.sock:/var/run/docker.sock
+      privileged: true
+      restart: always
     mariadb:
       image: mariadb:10.1.18
       environment:
@@ -243,4 +282,17 @@ rancher:
       volumes:
         - /opt/rancher/etc/mysql/my.cnf:/etc/mysql/my.cnf
         - /mysql/data:/var/lib/mysql
+        - /opt/rancher/etc/backup_user.sql:/docker-entrypoint-initdb.d/backup_user.sql
       net: host
+    xtrabackup:
+      image: cloudnautique/xtrabackup:v2.4
+      volumes:
+        - /mysql/data:/mysql/data
+        - /mysql/backups:/mysql/backups
+      environment:
+        - USER=${backup_user}
+        - PASSWORD=${backup_user_password}
+        - BACKUP_TARGET_DIR=/mysql/backups 
+        - DATA_DIR=/mysql/data 
+        - DATABASE=${mysql_database_name} 
+      net: "container:mariadb"

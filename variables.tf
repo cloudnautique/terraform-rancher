@@ -49,3 +49,15 @@ variable "registration_url" {}
 variable "rancher_version" {
   default = "rancher/server"
 }
+
+variable "backup_snapshot_id" {
+  default = ""
+}
+
+variable "primary_snapshot_id" {
+  default = ""
+}
+
+variable "ec2_database_ip_address" {
+  default = ""
+}

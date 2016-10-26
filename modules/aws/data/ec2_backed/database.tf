@@ -3,8 +3,10 @@
 module "volumes" {
   source = "./volumes"
 
-  name              = "${var.name}-mysql"
-  availability_zone = "${var.availability_zone}"
+  name                = "${var.name}-mysql"
+  availability_zone   = "${var.availability_zone}"
+  primary_snapshot_id = "${var.primary_snapshot_id}"
+  backup_snapshot_id  = "${var.backup_snapshot_id}"
 }
 
 module "compute" {
@@ -19,6 +21,7 @@ module "compute" {
   backup_volume_id   = "${module.volumes.backup_id}"
   user_data          = "${data.template_file.user_data.rendered}"
   security_group_ids = "${module.security_group.security_group_id}"
+  ip_address         = "${var.ip_address}"
 }
 
 module "security_group" {
@@ -33,10 +36,12 @@ data "template_file" "user_data" {
   template = "${file("${path.module}/files/userdata.template")}"
 
   vars {
-    mysql_root_password = "${var.mysql_root_password}"
-    mysql_user          = "${var.database_username}"
-    mysql_password      = "${var.database_password}"
-    mysql_database_name = "${var.database_name}"
+    mysql_root_password  = "${var.mysql_root_password}"
+    mysql_user           = "${var.database_username}"
+    mysql_password       = "${var.database_password}"
+    mysql_database_name  = "${var.database_name}"
+    backup_user          = "${var.backup_user}"
+    backup_user_password = "${var.backup_user_password}"
   }
 }
 
