@@ -57,8 +57,8 @@ output "public_subnet_ids" {
   value = "${module.public_subnets.subnet_ids}"
 }
 
-output "compute_security_groups" {
-  value = "${module.security_groups.compute_node_sgs}"
+output "management_security_groups" {
+  value = "${module.security_groups.management_node_sgs}"
 }
 
 output "public_elbs" {
