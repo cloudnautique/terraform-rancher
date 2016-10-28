@@ -52,7 +52,7 @@ module "ec2_database" {
 }
 
 module "compute" {
-  source = "./modules/aws/compute"
+  source = "./modules/aws/compute/ha-servers"
 
   name            = "${var.aws_env_name}-compute"
   ami_id          = "${var.aws_ami_id}"

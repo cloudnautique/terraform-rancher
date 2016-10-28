@@ -42,6 +42,13 @@ resource "aws_security_group" "db_security_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  egress {
+    from_port   = 6666
+    to_port     = 6666
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   // allow traffic for TCP 3306
   ingress {
     from_port   = 3306
