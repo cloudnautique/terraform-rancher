@@ -18,6 +18,6 @@ output "public_elbs" {
   value = "${module.networking.public_elbs}"
 }
 
-output "compute_security_groups" {
+output "management_security_groups" {
   value = "${module.networking.management_security_groups}"
 }
