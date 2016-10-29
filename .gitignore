@@ -3,3 +3,4 @@
 .terraform
 *.swp
 *.plan
+*-env/*
