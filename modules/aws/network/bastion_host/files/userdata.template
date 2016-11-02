@@ -1,0 +1,9 @@
+#cloud-config
+rancher:
+  services_include:
+    kernel-headers: true
+  services:
+    eip:
+      image: cloudnautique/eip-autoassign:latest
+      environment:
+        - EIP=${eip}
