@@ -16,13 +16,7 @@ variable "cidrs" {}
 
 variable "azs" {}
 
-resource "aws_internet_gateway" "public" {
-  vpc_id = "${var.vpc_id}"
-
-  tags {
-    Name = "${var.name}"
-  }
-}
+variable "igw_id" {}
 
 resource "aws_subnet" "public" {
   vpc_id            = "${var.vpc_id}"
@@ -46,7 +40,7 @@ resource "aws_route_table" "public" {
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = "${aws_internet_gateway.public.id}"
+    gateway_id = "${var.igw_id}"
   }
 
   tags {

@@ -1,0 +1,12 @@
+#cloud-config
+rancher:
+  services_include:
+    kernel-headers: "true"
+  services:
+    rancher-agent-init:
+      image: rancher/agent:v1.0.2
+      privileged: "true"
+      volumes:
+        - /var/lib/rancher:/var/lib/rancher
+        - /var/run/docker.sock:/var/run/docker.sock
+      command: "${rancher_reg_url}"

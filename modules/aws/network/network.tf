@@ -5,6 +5,13 @@ module "vpc" {
   cidr   = "${var.vpc_cidr}"
 }
 
+module "internet_gateway" {
+  source = "./igw"
+
+  name   = "${var.public_subnet_name}"
+  vpc_id = "${module.vpc.vpc_id}"
+}
+
 module "public_subnets" {
   source = "./public_subnet"
 
@@ -12,6 +19,7 @@ module "public_subnets" {
   vpc_id = "${module.vpc.vpc_id}"
   cidrs  = "${var.public_subnet_cidrs}"
   azs    = "${var.azs}"
+  igw_id = "${module.internet_gateway.igw_id}"
 }
 
 module "nat" {
@@ -63,4 +71,8 @@ output "management_security_groups" {
 
 output "public_elbs" {
   value = "${module.elb.management_elb_id}"
+}
+
+output "igw_id" {
+  value = "${module.internet_gateway.igw_id}"
 }
