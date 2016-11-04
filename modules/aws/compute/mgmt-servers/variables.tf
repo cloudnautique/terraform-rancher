@@ -36,12 +36,6 @@ variable "database_user" {}
 
 variable "database_password" {}
 
-variable "ca_chain" {}
-
-variable "server_cert" {}
-
-variable "server_private_key" {}
-
 variable "server_name" {}
 
 variable "rancher_version" {}

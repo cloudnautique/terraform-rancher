@@ -1,16 +1,5 @@
 #cloud-config
 write_files:
-  - path: /var/lib/rancher/bin/server-conf.sh
-    permissions: "0755"
-    content: |
-      #!/bin/bash
-      if [ ! -e /var/lib/rancher/etc/ssl/server-cert.pem ];then
-         echo "${server_cert}" | base64 -d > /var/lib/rancher/etc/ssl/server-cert.pem
-      fi
-
-      if [ ! -e /var/lib/rancher/etc/ssl/server-key.pem ];then
-         echo "${server_private_key}" | base64 -d > /var/lib/rancher/etc/ssl/server-key.pem
-      fi
   - path: /var/lib/rancher/etc/ssl/README.txt
     content: "rancher cert will be put into this directory"
   - path: /etc/nginx/nginx.conf
@@ -53,10 +42,7 @@ write_files:
       server {
         server_name ${server_name};
 
-        listen 443 ssl proxy_protocol;
-
-        ssl_certificate /etc/ssl/certs/server-cert.pem;
-        ssl_certificate_key /etc/ssl/certs/server-key.pem;
+        listen 443 proxy_protocol;
 
         set_real_ip_from ${subnet_cidr};
         real_ip_header proxy_protocol;
@@ -79,7 +65,7 @@ write_files:
       }
       server {
         listen 80 proxy_protocol;
-        server_name <server>;
+        server_name ${server_name};
         return 301 https://$server_name$request_uri;
       }
 run_cmd:
@@ -103,14 +89,12 @@ rancher:
         - CATTLE_DB_CATTLE_PASSWORD=${database_password}
         - CATTLE_DB_CATTLE_MYSQL_NAME=${database_name}
       ports:
-        - 81:80
+        - 81:443
         - 444:443
         - 80:8080
     nginx:
       image: nginx:1.11-alpine
       net: "container:rancher"
       volumes:
-        - /var/lib/rancher/etc/ssl/server-key.pem:/etc/ssl/certs/server-key.pem
-        - /var/lib/rancher/etc/ssl/server-cert.pem:/etc/ssl/certs/server-cert.pem
-        - /etc/nginx/conf.d/rancher.conf:/etc/nginx/conf.d/rancher.conf
+        - /etc/nginx/conf.d:/etc/nginx/conf.d
         - /etc/nginx/nginx.conf:/etc/nginx/nginx.conf

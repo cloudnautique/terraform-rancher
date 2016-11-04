@@ -19,3 +19,5 @@ variable "public_subnet_cidrs" {}
 variable "private_subnet_cidrs" {}
 
 variable "azs" {}
+
+variable "elb_ssl_certificate_arn" {}

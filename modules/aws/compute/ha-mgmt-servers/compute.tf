@@ -2,17 +2,14 @@ data "template_file" "user_data" {
   template = "${file("${path.module}/files/userdata.template")}"
 
   vars {
-    cluster_size       = "${var.scale_desired_size}"
-    database_endpoint  = "${var.database_endpoint}"
-    database_user      = "${var.database_user}"
-    database_password  = "${var.database_password}"
-    database_name      = "${var.database_name}"
-    encryption_key     = "${var.encryption_key}"
-    ca_chain           = "${var.ca_chain}"
-    server_cert        = "${var.server_cert}"
-    server_private_key = "${var.server_private_key}"
-    registration_url   = "${var.registration_url}"
-    rancher_version    = "${var.rancher_version}"
+    cluster_size      = "${var.scale_desired_size}"
+    database_endpoint = "${var.database_endpoint}"
+    database_user     = "${var.database_user}"
+    database_password = "${var.database_password}"
+    database_name     = "${var.database_name}"
+    encryption_key    = "${var.encryption_key}"
+    registration_url  = "${var.registration_url}"
+    rancher_version   = "${var.rancher_version}"
   }
 }
 

@@ -4,6 +4,8 @@ variable "security_groups" {}
 
 variable "public_subnets" {}
 
+variable "ssl_certificate_arn" {}
+
 resource "aws_elb" "management_elb" {
   name = "${var.name}-elb"
 
@@ -14,10 +16,11 @@ resource "aws_elb" "management_elb" {
   security_groups           = ["${var.security_groups}"]
 
   listener {
-    instance_port     = 444
-    instance_protocol = "tcp"
-    lb_port           = 443
-    lb_protocol       = "tcp"
+    instance_port      = 81
+    instance_protocol  = "tcp"
+    lb_port            = 443
+    lb_protocol        = "ssl"
+    ssl_certificate_id = "${var.ssl_certificate_arn}"
   }
 
   listener {

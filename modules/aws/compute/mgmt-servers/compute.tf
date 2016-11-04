@@ -2,15 +2,13 @@ data "template_file" "user_data" {
   template = "${file("${path.module}/files/userdata.template")}"
 
   vars {
-    database_endpoint  = "${var.database_endpoint}"
-    database_user      = "${var.database_user}"
-    database_password  = "${var.database_password}"
-    database_name      = "${var.database_name}"
-    server_cert        = "${var.server_cert}"
-    server_private_key = "${var.server_private_key}"
-    server_name        = "${var.server_name}"
-    rancher_version    = "${var.rancher_version}"
-    subnet_cidr        = "${var.elb_cidr}"
+    database_endpoint = "${var.database_endpoint}"
+    database_user     = "${var.database_user}"
+    database_password = "${var.database_password}"
+    database_name     = "${var.database_name}"
+    server_name       = "${var.server_name}"
+    rancher_version   = "${var.rancher_version}"
+    subnet_cidr       = "${var.elb_cidr}"
   }
 }
 

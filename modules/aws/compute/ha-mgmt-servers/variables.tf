@@ -34,13 +34,7 @@ variable "database_user" {}
 
 variable "database_password" {}
 
-variable "ca_chain" {}
-
 variable "encryption_key" {}
-
-variable "server_cert" {}
-
-variable "server_private_key" {}
 
 variable "registration_url" {}
 

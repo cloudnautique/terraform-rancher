@@ -47,10 +47,11 @@ module "security_groups" {
 }
 
 module "elb" {
-  source          = "./elb"
-  name            = "${var.vpc_name}"
-  public_subnets  = "${module.public_subnets.subnet_ids}"
-  security_groups = "${module.security_groups.elb_sg_id}"
+  source              = "./elb"
+  name                = "${var.vpc_name}"
+  public_subnets      = "${module.public_subnets.subnet_ids}"
+  security_groups     = "${module.security_groups.elb_sg_id}"
+  ssl_certificate_arn = "${var.elb_ssl_certificate_arn}"
 }
 
 output "vpc_id" {

@@ -2,6 +2,7 @@
 write_files:
   - path: /var/lib/rancher/etc/server.conf
     content: |
+      mkdir -p /var/lib/rancher/etc/server
       export CATTLE_HA_CLUSTER_SIZE=${cluster_size}
       export CATTLE_HA_HOST_REGISTRATION_URL=${registration_url}
       export CATTLE_HA_CONTAINER_PREFIX=rancher-ha-
@@ -22,15 +23,6 @@ write_files:
       # Uncomment below to force HA enabled and not require one to set it in the UI
       export CATTLE_HA_ENABLED=true
 
-      if [ ! -e /var/lib/rancher/etc/ssl/server-cert.pem ];then
-         echo "${server_cert}" | base64 -d > /var/lib/rancher/etc/ssl/server-cert.pem
-      fi
-
-      if [ ! -e /var/lib/rancher/etc/ssl/server-key.pem ];then
-         echo "${server_private_key}" | base64 -d > /var/lib/rancher/etc/ssl/server-key.pem
-      fi
-
-      touch /var/lib/rancher/etc/ssl/ca.crt
   - path: /var/lib/rancher/etc/ssl/README.txt
     content: "CA crt will be pulled into this directory"
   - path: /var/lib/rancher/etc/server/encryption.key
