@@ -1,0 +1,116 @@
+#cloud-config
+write_files:
+  - path: /var/lib/rancher/bin/server-conf.sh
+    permissions: "0755"
+    content: |
+      #!/bin/bash
+      if [ ! -e /var/lib/rancher/etc/ssl/server-cert.pem ];then
+         echo "${server_cert}" | base64 -d > /var/lib/rancher/etc/ssl/server-cert.pem
+      fi
+
+      if [ ! -e /var/lib/rancher/etc/ssl/server-key.pem ];then
+         echo "${server_private_key}" | base64 -d > /var/lib/rancher/etc/ssl/server-key.pem
+      fi
+  - path: /var/lib/rancher/etc/ssl/README.txt
+    content: "rancher cert will be put into this directory"
+  - path: /etc/nginx/nginx.conf
+    permissions: "0644"
+    content: |
+      user  nginx;
+      worker_processes  1;
+
+      error_log  /var/log/nginx/error.log warn;
+      pid        /var/run/nginx.pid;
+
+
+      events {
+        worker_connections  1024;
+      }
+
+
+        http {
+            include       /etc/nginx/mime.types;
+            default_type  application/octet-stream;
+      
+            log_format  main  '$proxy_protocol_addr - $remote_user [$time_local] "$request" '
+                              '$status $body_bytes_sent "$http_referer" '
+                              '"$http_user_agent" "$http_x_forwarded_for"';
+
+            access_log  /var/log/nginx/access.log  main;
+
+            sendfile        on;
+            #tcp_nopush     on;
+
+            keepalive_timeout  65;
+
+            #gzip  on;
+
+            include /etc/nginx/conf.d/*.conf;
+        } 
+  - path: /etc/nginx/conf.d/rancher.conf
+    permissions: "0644"
+    content: |
+      server {
+        server_name ${server_name};
+
+        listen 443 ssl proxy_protocol;
+
+        ssl_certificate /etc/ssl/certs/server-cert.pem;
+        ssl_certificate_key /etc/ssl/certs/server-key.pem;
+
+        set_real_ip_from ${subnet_cidr};
+        real_ip_header proxy_protocol;
+
+        location / {
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-Proto https;
+            proxy_set_header X-Forwarded-Port 443;
+            proxy_set_header X-Forwarded-For $proxy_protocol_addr;
+            proxy_set_header X-Real-IP $proxy_protocol_addr;
+            proxy_pass http://localhost:8080;
+
+            proxy_http_version 1.1;
+
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "Upgrade";
+            # This allows the ability for the execute shell window to remain open for up to 15 minutes. Without this parameter, the default is 1 minute and will automatically close.
+            proxy_read_timeout 900s;
+        }
+      }
+      server {
+        listen 80 proxy_protocol;
+        server_name <server>;
+        return 301 https://$server_name$request_uri;
+      }
+run_cmd:
+  - [ "/var/lib/rancher/bin/server-config" ]
+rancher:
+  services_include:
+    kernel-headers: true
+  services:
+    bootstrap:
+      image: ${rancher_version}
+      volumes:
+        - /var/lib/rancher:/var/lib/rancher
+      command: "/var/lib/rancher/bin/server-conf.sh"
+      labels:
+        io.rancher.os.before: rancher
+    rancher:
+      image: ${rancher_version}
+      environment:
+        - CATTLE_DB_CATTLE_MYSQL_HOST=${database_endpoint}
+        - CATTLE_DB_CATTLE_USERNAME=${database_user}
+        - CATTLE_DB_CATTLE_PASSWORD=${database_password}
+        - CATTLE_DB_CATTLE_MYSQL_NAME=${database_name}
+      ports:
+        - 81:80
+        - 444:443
+        - 80:8080
+    nginx:
+      image: nginx:1.11-alpine
+      net: "container:rancher"
+      volumes:
+        - /var/lib/rancher/etc/ssl/server-key.pem:/etc/ssl/certs/server-key.pem
+        - /var/lib/rancher/etc/ssl/server-cert.pem:/etc/ssl/certs/server-cert.pem
+        - /etc/nginx/conf.d/rancher.conf:/etc/nginx/conf.d/rancher.conf
+        - /etc/nginx/nginx.conf:/etc/nginx/nginx.conf
