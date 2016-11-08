@@ -6,6 +6,10 @@ variable "subnet_cidrs" {}
 
 variable "subnet_ids" {}
 
+variable "cattle_agent_ip" {
+  default = "local-ipv4"
+}
+
 variable "number_of_instances" {
   default = "1"
 }
@@ -23,6 +27,7 @@ data "template_file" "user_data" {
 
   vars {
     rancher_reg_url = "${var.rancher_reg_url}"
+    ip-addr         = "${var.cattle_agent_ip}"
   }
 }
 

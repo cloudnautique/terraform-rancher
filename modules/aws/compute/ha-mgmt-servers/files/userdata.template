@@ -20,6 +20,8 @@ write_files:
       export CATTLE_HA_PORT_ZK_CLIENT=2181
       export CATTLE_HA_PORT_ZK_QUORUM=2888
       export CATTLE_HA_PORT_ZK_LEADER=3888
+      export CATTLE_LOGBACK_OUTPUT_CONSOLE=false
+      export CATTLE_LOGBACK_OUTPUT_LOGSTASH_CONSOLE=true
       # Uncomment below to force HA enabled and not require one to set it in the UI
       export CATTLE_HA_ENABLED=true
 
@@ -28,6 +30,13 @@ write_files:
   - path: /var/lib/rancher/etc/server/encryption.key
     content: ${encryption_key}
 rancher:
+  docker:
+    engine: docker-1.10.3
+    log_driver: "json-file"
+    log_opts:
+      max-file: "3"
+      max-size: "100m"
+      labels: "bigsky,saas,production"
   services_include:
     kernel-headers: true
   services:

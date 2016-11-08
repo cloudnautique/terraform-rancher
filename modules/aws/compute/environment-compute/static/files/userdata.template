@@ -1,12 +1,12 @@
 #cloud-config
+write_files:
+  - path: /etc/rc.local
+    permissions: "0755"
+    owner: root
+    content: |
+      #!/bin/bash
+      wait-for-docker
+      docker run -d -v /var/lib/rancher:/var/lib/rancher -v /var/run/docker.sock:/var/run/docker.sock --privileged -e CATTLE_AGENT_IP="$(wget -qO - http://169.254.169.254/2016-06-30/meta-data/${ip-addr})" rancher/agent:v1.0.2 ${rancher_reg_url}
 rancher:
   services_include:
     kernel-headers: "true"
-  services:
-    rancher-agent-init:
-      image: rancher/agent:v1.0.2
-      privileged: "true"
-      volumes:
-        - /var/lib/rancher:/var/lib/rancher
-        - /var/run/docker.sock:/var/run/docker.sock
-      command: "${rancher_reg_url}"
