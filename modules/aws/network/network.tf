@@ -41,7 +41,7 @@ module "private_subnets" {
 }
 
 module "security_groups" {
-  source               = "./security_groups"
+  source               = "./ha_mgmt_security_groups"
   vpc_id               = "${module.vpc.vpc_id}"
   private_subnet_cidrs = "${var.public_subnet_cidrs}"
 }
