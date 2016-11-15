@@ -18,6 +18,11 @@ variable "rancher_reg_url" {}
 
 variable "ami_id" {}
 
+variable "additional_security_groups" {
+  type    = "list"
+  default = []
+}
+
 variable "instance_type" {
   default = "t2.micro"
 }
@@ -47,7 +52,7 @@ resource "aws_instance" "compute-node" {
   subnet_id              = "${element(sort(split(",", var.subnet_ids)), count.index % length(split(",", var.subnet_ids)))}"
   instance_type          = "${var.instance_type}"
   user_data              = "${data.template_file.user_data.rendered}"
-  vpc_security_group_ids = ["${module.ipsec_security_group.ipsec_id}"]
+  vpc_security_group_ids = ["${concat(list(module.ipsec_security_group.ipsec_id), var.additional_security_groups)}"]
 
   lifecycle {
     create_before_destroy = "true"

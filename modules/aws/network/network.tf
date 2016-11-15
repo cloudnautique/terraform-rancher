@@ -46,6 +46,16 @@ module "security_groups" {
   private_subnet_cidrs = "${var.public_subnet_cidrs}"
 }
 
+module "vpc_level_security_groups" {
+  source = "./env_security_groups/vpc_sgs"
+
+  name                 = "${var.vpc_name}"
+  vpc_id               = "${module.vpc.vpc_id}"
+  vpc_cidr             = "${var.vpc_cidr}"
+  private_subnet_cidrs = "${var.private_subnet_cidrs}"
+  public_subnet_cidrs  = "${var.public_subnet_cidrs}"
+}
+
 module "elb" {
   source              = "./elb"
   name                = "${var.vpc_name}"
@@ -76,4 +86,16 @@ output "public_elbs" {
 
 output "igw_id" {
   value = "${module.internet_gateway.igw_id}"
+}
+
+output "vpc_allow_all_internal_sg_id" {
+  value = "${module.vpc_level_security_groups.vpc_allow_all_internal_id}"
+}
+
+output "vpc_allow_all_private_subnets_sg_id" {
+  value = "${module.vpc_level_security_groups.vpc_allow_all_private_subnets_id}"
+}
+
+output "vpc_allow_all_public_subnets_sg_id" {
+  value = "${module.vpc_level_security_groups.vpc_allow_all_public_subnets_id}"
 }

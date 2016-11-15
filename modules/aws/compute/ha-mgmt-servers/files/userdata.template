@@ -6,6 +6,7 @@ write_files:
       export CATTLE_HA_CLUSTER_SIZE=${cluster_size}
       export CATTLE_HA_HOST_REGISTRATION_URL=${registration_url}
       export CATTLE_HA_CONTAINER_PREFIX=rancher-ha-
+      export CATTLE_HA_CLUSTER_IMAGE=${rancher_version}
       export CATTLE_DB_CATTLE_MYSQL_HOST=${database_endpoint}
       export CATTLE_DB_CATTLE_MYSQL_PORT=3306
       export CATTLE_DB_CATTLE_MYSQL_NAME=${database_name}
