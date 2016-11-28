@@ -14,15 +14,17 @@ resource "aws_instance" "database_primary" {
 }
 
 resource "aws_volume_attachment" "primary" {
-  device_name = "/dev/xvdb"
-  volume_id   = "${var.primary_volume_id}"
-  instance_id = "${aws_instance.database_primary.id}"
+  device_name  = "/dev/xvdb"
+  volume_id    = "${var.primary_volume_id}"
+  instance_id  = "${aws_instance.database_primary.id}"
+  skip_destroy = true
 }
 
 resource "aws_volume_attachment" "backup" {
-  device_name = "/dev/xvdc"
-  volume_id   = "${var.backup_volume_id}"
-  instance_id = "${aws_instance.database_primary.id}"
+  device_name  = "/dev/xvdc"
+  volume_id    = "${var.backup_volume_id}"
+  instance_id  = "${aws_instance.database_primary.id}"
+  skip_destroy = true
 }
 
 output "private_ip" {

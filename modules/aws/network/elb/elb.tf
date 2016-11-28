@@ -6,6 +6,30 @@ variable "public_subnets" {}
 
 variable "ssl_certificate_arn" {}
 
+variable "instance_http_port" {
+  default = "81"
+}
+
+variable "instance_http_port_proto" {
+  default = "tcp"
+}
+
+variable "instance_ssl_port_proto" {
+  default = "tcp"
+}
+
+variable "instance_ssl_port" {
+  default = "81"
+}
+
+variable "health_check_target" {
+  default = "HTTP:80/ping"
+}
+
+variable "proxy_proto_port_string" {
+  default = "81,444"
+}
+
 resource "aws_elb" "management_elb" {
   name = "${var.name}-elb"
 
@@ -13,19 +37,19 @@ resource "aws_elb" "management_elb" {
   subnets                   = ["${split(",", var.public_subnets)}"]
   cross_zone_load_balancing = true
   internal                  = false
-  security_groups           = ["${var.security_groups}"]
+  security_groups           = ["${split(",", var.security_groups)}"]
 
   listener {
-    instance_port      = 81
-    instance_protocol  = "tcp"
+    instance_port      = "${var.instance_ssl_port}"
+    instance_protocol  = "${var.instance_ssl_port_proto}"
     lb_port            = 443
     lb_protocol        = "ssl"
     ssl_certificate_id = "${var.ssl_certificate_arn}"
   }
 
   listener {
-    instance_port     = 81
-    instance_protocol = "tcp"
+    instance_port     = "${var.instance_http_port}"
+    instance_protocol = "${var.instance_http_port_proto}"
     lb_port           = 80
     lb_protocol       = "tcp"
   }
@@ -35,7 +59,7 @@ resource "aws_elb" "management_elb" {
     unhealthy_threshold = 4
     timeout             = 5
 
-    target   = "HTTP:80/ping"
+    target   = "${var.health_check_target}"
     interval = 7
   }
 
@@ -44,7 +68,7 @@ resource "aws_elb" "management_elb" {
 
 resource "aws_proxy_protocol_policy" "management_elb_policy" {
   load_balancer  = "${aws_elb.management_elb.name}"
-  instance_ports = ["81", "444"]
+  instance_ports = ["${split(",", var.proxy_proto_port_string)}"]
 }
 
 output "management_elb_id" {
