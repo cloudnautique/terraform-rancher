@@ -68,6 +68,13 @@ resource "aws_security_group" "management_allow_elb" {
     protocol        = "tcp"
     security_groups = ["${aws_security_group.management_elb.id}"]
   }
+
+  ingress {
+    from_port       = 8080
+    to_port         = 8080
+    protocol        = "tcp"
+    security_groups = ["${aws_security_group.management_elb.id}"]
+  }
 }
 
 resource "aws_security_group" "management_allow_internal" {
@@ -118,6 +125,13 @@ resource "aws_security_group" "management_allow_internal" {
   }
 
   ingress {
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["${split(",", var.private_subnet_cidrs)}"]
+  }
+
+  ingress {
     from_port   = 18080
     to_port     = 18080
     protocol    = "tcp"
@@ -155,6 +169,13 @@ resource "aws_security_group" "management_allow_internal" {
   ingress {
     from_port   = 6379
     to_port     = 6379
+    protocol    = "tcp"
+    cidr_blocks = ["${split(",", var.private_subnet_cidrs)}"]
+  }
+
+  ingress {
+    from_port   = 9345
+    to_port     = 9345
     protocol    = "tcp"
     cidr_blocks = ["${split(",", var.private_subnet_cidrs)}"]
   }
