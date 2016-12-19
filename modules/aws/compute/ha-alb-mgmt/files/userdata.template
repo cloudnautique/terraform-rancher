@@ -6,7 +6,7 @@ write_files:
     content: |
       #!/bin/bash
       wait-for-docker
-      docker run -d -p 8080:8080 -p 9345:9345 ${rancher_version} --advertise-address $(wget -qO - http://169.254.169.254/2016-06-30/meta-data/${ip-addr}) --db-host ${database_endpoint} --db-pass ${database_password} --db-user ${database_user}
+      docker run -d -p 8080:8080 -p 9345:9345 -e CATTLE_LOGBACK_OUTPUT_CONSOLE="false" -e CATTLE_LOGBACK_OUTPUT_LOGSTASH_CONSOLE="true" ${rancher_version} --advertise-address $(wget -qO - http://169.254.169.254/2016-06-30/meta-data/${ip-addr}) --db-host ${database_endpoint} --db-pass ${database_password} --db-user ${database_user}
   - path: /var/lib/rancher/etc/ssl/README.txt
     content: "CA crt will be pulled into this directory"
 rancher:

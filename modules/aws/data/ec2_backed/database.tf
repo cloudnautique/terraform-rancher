@@ -19,7 +19,7 @@ module "compute" {
 
   primary_volume_id  = "${module.volumes.primary_id}"
   backup_volume_id   = "${module.volumes.backup_id}"
-  user_data          = "${data.template_file.user_data.rendered}"
+  user_data          = "${var.use_module_userdata == "true" ? data.template_file.user_data.rendered : var.externally_defined_userdata}"
   security_group_ids = "${module.security_group.security_group_id}"
   ip_address         = "${var.ip_address}"
 }

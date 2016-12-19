@@ -49,3 +49,13 @@ variable "backup_snapshot_id" {
 variable "ip_address" {
   default = ""
 }
+
+variable "use_module_userdata" {
+  type    = "string"
+  default = "true"
+}
+
+variable "externally_defined_userdata" {
+  type    = "string"
+  default = ""
+}

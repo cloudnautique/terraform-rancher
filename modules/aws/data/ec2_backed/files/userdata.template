@@ -242,6 +242,15 @@ write_files:
        '${backup_user}'@'127.0.0.1';
       FLUSH PRIVILEGES;
 rancher:
+  docker:
+    engine: docker-1.12.3
+    log_driver: "json-file"
+    log_opts:
+      max-file: "3"
+      max-size: "100m"
+      labels: "bigsky,saas,production"
+  services_include:
+    kernel-headers: "true"
   services:
     format_mount_primary:
       image: rancher/os:v0.7.0
