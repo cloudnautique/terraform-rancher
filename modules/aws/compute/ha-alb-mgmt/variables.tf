@@ -37,3 +37,13 @@ variable "registration_url" {}
 variable "rancher_version" {}
 
 variable "target_group_arn" {}
+
+variable "use_module_userdata" {
+  default = "true"
+  type    = "string"
+}
+
+variable "externally_defined_userdata" {
+  type    = "string"
+  default = ""
+}

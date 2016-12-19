@@ -24,7 +24,7 @@ module "asg" {
   scale_min_size     = "${var.scale_min_size}"
   scale_max_size     = "${var.scale_max_size}"
   scale_desired_size = "${var.scale_desired_size}"
-  userdata           = "${data.template_file.user_data.rendered}"
+  userdata           = "${var.use_module_userdata ? data.template_file.user_data.rendered : var.externally_defined_userdata}"
   target_group_arn   = "${var.target_group_arn}"
 
   #azs                = "${var.azs}"
