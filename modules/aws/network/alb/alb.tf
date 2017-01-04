@@ -35,6 +35,17 @@ resource "aws_alb_listener" "rancher_ha" {
   }
 }
 
+resource "aws_alb_listener" "rancher_ha_non_ssl" {
+  load_balancer_arn = "${aws_alb.rancher_management.arn}"
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    target_group_arn = "${aws_alb_target_group.rancher_management.arn}"
+    type             = "forward"
+  }
+}
+
 output "management_id" {
   value = "${aws_alb.rancher_management.id}"
 }

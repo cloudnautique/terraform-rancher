@@ -38,6 +38,10 @@ variable "rancher_version" {}
 
 variable "target_group_arn" {}
 
+variable "health_check_type" {
+  default = "ELB"
+}
+
 variable "use_module_userdata" {
   default = "true"
   type    = "string"

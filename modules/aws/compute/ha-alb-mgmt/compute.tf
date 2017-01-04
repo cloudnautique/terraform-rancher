@@ -28,7 +28,9 @@ module "asg" {
   target_group_arn   = "${var.target_group_arn}"
 
   #azs                = "${var.azs}"
-  subnet_ids = "${var.subnet_ids}"
+
+  subnet_ids        = "${var.subnet_ids}"
+  health_check_type = "${var.health_check_type}"
 }
 
 output "userdata" {
