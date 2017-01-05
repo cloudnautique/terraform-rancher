@@ -101,6 +101,6 @@ output "vpc_allow_all_public_subnets_sg_id" {
   value = "${module.vpc_level_security_groups.vpc_allow_all_public_subnets_id}"
 }
 
-output "alb_target_group_arn" {
-  value = "${module.alb.target_group_arn}"
+output "alb_target_group_arns" {
+  value = "${module.alb.target_group_arns}"
 }

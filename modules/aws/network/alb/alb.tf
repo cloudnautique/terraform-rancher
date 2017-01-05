@@ -35,13 +35,20 @@ resource "aws_alb_listener" "rancher_ha" {
   }
 }
 
+resource "aws_alb_target_group" "rancher_http_management" {
+  name     = "${var.name}-target-group-http"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = "${var.vpc_id}"
+}
+
 resource "aws_alb_listener" "rancher_ha_non_ssl" {
   load_balancer_arn = "${aws_alb.rancher_management.arn}"
   port              = "80"
   protocol          = "HTTP"
 
   default_action {
-    target_group_arn = "${aws_alb_target_group.rancher_management.arn}"
+    target_group_arn = "${aws_alb_target_group.rancher_http_management.arn}"
     type             = "forward"
   }
 }
@@ -50,6 +57,6 @@ output "management_id" {
   value = "${aws_alb.rancher_management.id}"
 }
 
-output "target_group_arn" {
-  value = "${aws_alb_target_group.rancher_management.arn}"
+output "target_group_arns" {
+  value = "${join(",", list(aws_alb_target_group.rancher_management.arn,aws_alb_target_group.rancher_http_management.arn))}"
 }

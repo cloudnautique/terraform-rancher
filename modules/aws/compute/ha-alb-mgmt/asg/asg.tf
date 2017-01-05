@@ -51,7 +51,7 @@ resource "aws_autoscaling_group" "rancher_management" {
   health_check_grace_period = 900
   health_check_type         = "${var.health_check_type}"
   force_delete              = false
-  target_group_arns         = ["${var.target_group_arn}"]
+  target_group_arns         = ["${split(",", var.target_group_arn)}"]
 
   #availability_zones        = ["${split(",", var.azs)}"]
 
