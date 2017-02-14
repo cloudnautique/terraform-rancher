@@ -1,19 +1,19 @@
 //VPC For the Rancher env in this region.
 module "vpc" {
-  source = "./vpc"
+  source = "../vpc"
   name   = "${var.vpc_name}-vpc"
   cidr   = "${var.vpc_cidr}"
 }
 
 module "internet_gateway" {
-  source = "./igw"
+  source = "../igw"
 
   name   = "${var.public_subnet_name}"
   vpc_id = "${module.vpc.vpc_id}"
 }
 
 module "public_subnets" {
-  source = "./public_subnet"
+  source = "../public_subnet"
 
   name   = "${var.public_subnet_name}"
   vpc_id = "${module.vpc.vpc_id}"
@@ -23,7 +23,7 @@ module "public_subnets" {
 }
 
 module "nat" {
-  source = "./nat"
+  source = "../nat"
 
   name              = "${var.vpc_name}-nat"
   azs               = "${var.azs}"
@@ -31,7 +31,7 @@ module "nat" {
 }
 
 module "private_subnets" {
-  source = "./private_subnet"
+  source = "../private_subnet"
 
   name            = "${var.private_subnet_name}"
   vpc_id          = "${module.vpc.vpc_id}"
@@ -41,13 +41,13 @@ module "private_subnets" {
 }
 
 module "security_groups" {
-  source               = "./ha_mgmt_security_groups"
+  source               = "../ha_mgmt_security_groups"
   vpc_id               = "${module.vpc.vpc_id}"
   private_subnet_cidrs = "${var.public_subnet_cidrs}"
 }
 
 module "vpc_level_security_groups" {
-  source = "./env_security_groups/vpc_sgs"
+  source = "../env_security_groups/vpc_sgs"
 
   name                 = "${var.vpc_name}"
   vpc_id               = "${module.vpc.vpc_id}"
@@ -57,7 +57,7 @@ module "vpc_level_security_groups" {
 }
 
 module "elb" {
-  source              = "./elb"
+  source              = "../elb"
   name                = "${var.vpc_name}"
   public_subnets      = "${module.public_subnets.subnet_ids}"
   security_groups     = "${module.security_groups.elb_sg_id}"

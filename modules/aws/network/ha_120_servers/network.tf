@@ -41,7 +41,7 @@ module "private_subnets" {
 }
 
 module "security_groups" {
-  source               = "./ha_mgmt_security_groups"
+  source               = "../ha_mgmt_security_groups"
   vpc_id               = "${module.vpc.vpc_id}"
   private_subnet_cidrs = "${var.public_subnet_cidrs}"
 }
@@ -103,4 +103,8 @@ output "vpc_allow_all_public_subnets_sg_id" {
 
 output "alb_target_group_arns" {
   value = "${module.alb.target_group_arns}"
+}
+
+output "lb_frontend_sg_id" {
+  value = "${module.security_groups.elb_sg_id}"
 }

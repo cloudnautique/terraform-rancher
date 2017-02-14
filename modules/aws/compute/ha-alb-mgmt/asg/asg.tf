@@ -66,3 +66,11 @@ resource "aws_autoscaling_group" "rancher_management" {
     create_before_destroy = true
   }
 }
+
+output "id" {
+  value = "${aws_autoscaling_group.rancher_management.id}"
+}
+
+output "name" {
+  value = "${aws_autoscaling_group.rancher_management.name}"
+}

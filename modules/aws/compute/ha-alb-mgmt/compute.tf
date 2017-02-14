@@ -33,6 +33,14 @@ module "asg" {
   health_check_type = "${var.health_check_type}"
 }
 
+output "asg_name" {
+  value = "${module.asg.name}"
+}
+
+output "asg_id" {
+  value = "${module.asg.id}"
+}
+
 output "userdata" {
   value = "${data.template_file.user_data.rendered}"
 }
