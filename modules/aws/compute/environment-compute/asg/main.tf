@@ -84,7 +84,7 @@ resource "aws_launch_configuration" "rancher_env" {
   instance_type               = "${var.instance_type}"
   key_name                    = "${var.ssh_key_name}"
   associate_public_ip_address = false
-  ebs_optimized               = true
+  ebs_optimized               = false
   user_data                   = "${var.userdata}"
 
   root_block_device {
