@@ -30,6 +30,14 @@ variable "instance_type" {
   default = "t2.micro"
 }
 
+variable "root_volume_size" {
+  default = "8"
+}
+
+variable "root_volume_type" {
+  default = "standard"
+}
+
 variable "userdata" {}
 
 variable "health_check_target" {}
@@ -76,8 +84,13 @@ resource "aws_launch_configuration" "rancher_env" {
   instance_type               = "${var.instance_type}"
   key_name                    = "${var.ssh_key_name}"
   associate_public_ip_address = false
-  ebs_optimized               = false
+  ebs_optimized               = true
   user_data                   = "${var.userdata}"
+
+  root_block_device {
+    volume_type = "${var.root_volume_type}"
+    volume_size = "${var.root_volume_size}"
+  }
 
   lifecycle {
     create_before_destroy = true
