@@ -10,6 +10,10 @@ variable "ssh_key_name" {}
 
 variable "ssl_certificate_arn" {}
 
+variable "spot_enabled" {
+  default = "false"
+}
+
 variable "cattle_agent_ip" {
   default = "local-ipv4"
 }
@@ -115,6 +119,12 @@ resource "aws_autoscaling_group" "rancher_compute_nodes" {
   tag {
     key                 = "Name"
     value               = "${var.name}"
+    propagate_at_launch = true
+  }
+
+  tag {
+    key                 = "spot-enabled"
+    value               = "${var.spot_enabled}"
     propagate_at_launch = true
   }
 

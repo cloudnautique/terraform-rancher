@@ -74,3 +74,7 @@ resource "aws_proxy_protocol_policy" "management_elb_policy" {
 output "management_elb_id" {
   value = "${aws_elb.management_elb.id}"
 }
+
+output "dns_name" {
+  value = "${aws_elb.management_elb.dns_name}"
+}
