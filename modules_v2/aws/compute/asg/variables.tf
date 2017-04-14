@@ -8,7 +8,7 @@ variable "subnet_ids" {}
 
 variable "ssh_key_name" {}
 
-variable "lb_id" {}
+variable "lb_ids" {}
 
 variable "use_elb" {
   description = "To use ELB pass 1, to use ALB pass 0"

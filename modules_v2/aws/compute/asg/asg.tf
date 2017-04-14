@@ -34,7 +34,7 @@ resource "aws_autoscaling_group" "elb" {
   health_check_grace_period = 900
   health_check_type         = "${var.health_check_type}"
   force_delete              = false
-  load_balancers            = ["${var.lb_id}"]
+  load_balancers            = ["${split(",", var.lb_ids)}"]
 
   tag {
     key                 = "Name"

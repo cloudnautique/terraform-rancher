@@ -11,7 +11,7 @@ module "asg" {
   scale_max_size     = "${var.scale_max_size}"
   scale_desired_size = "${var.scale_desired_size}"
   userdata           = "${var.externally_defined_userdata}"
-  lb_id              = "${var.lb_id}"
+  lb_ids             = "${var.lb_ids}"
 
   subnet_cidrs        = "${var.subnet_cidrs}"
   subnet_ids          = "${var.subnet_ids}"

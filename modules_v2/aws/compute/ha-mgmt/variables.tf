@@ -16,7 +16,7 @@ variable "instance_type" {
 
 variable "ssh_key_name" {}
 
-variable "lb_id" {
+variable "lb_ids" {
   default = ""
 }
 
