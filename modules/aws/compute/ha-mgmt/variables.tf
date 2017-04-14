@@ -22,36 +22,13 @@ variable "scale_desired_size" {
   default = "3"
 }
 
-variable "spot_enabled" {
-  default = "false"
-}
-
 variable "subnet_ids" {}
-
-variable "database_endpoint" {}
-
-variable "database_name" {}
-
-variable "database_user" {}
-
-variable "database_password" {}
-
-variable "registration_url" {}
-
-variable "rancher_version" {}
-
-variable "target_group_arn" {}
 
 variable "health_check_type" {
   default = "ELB"
 }
 
-variable "use_module_userdata" {
-  default = "true"
-  type    = "string"
-}
-
-variable "externally_defined_userdata" {
+variable "userdata" {
   type    = "string"
   default = ""
 }

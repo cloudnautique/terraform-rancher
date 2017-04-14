@@ -19,6 +19,7 @@ module "aws_database" {
   database_user         = "${var.database_user}"
   database_password     = "${var.database_password}"
   db_subnet_ids         = "${var.db_subnet_ids}"
+  skip_final_snapshot   = "${var.skip_final_snapshot}"
 
   // dynamic
   rds_security_group_id = "${module.aws_sg_db.security_group_id_database}"

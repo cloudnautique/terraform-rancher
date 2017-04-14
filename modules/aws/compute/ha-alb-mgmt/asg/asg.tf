@@ -22,6 +22,10 @@ variable "health_check_type" {
   default = "ELB"
 }
 
+variable "spot_enabled" {
+  default = "false"
+}
+
 variable "subnet_ids" {}
 
 variable "userdata" {}
@@ -57,11 +61,19 @@ resource "aws_autoscaling_group" "rancher_management" {
 
   vpc_zone_identifier  = ["${split(",", var.subnet_ids)}"]
   launch_configuration = "${aws_launch_configuration.rancher_management.name}"
+
   tag {
     key                 = "Name"
     value               = "${var.name}"
     propagate_at_launch = true
   }
+
+  tag {
+    key                 = "spot-enabled"
+    value               = "${var.spot_enabled}"
+    propagate_at_launch = true
+  }
+
   lifecycle {
     create_before_destroy = true
   }

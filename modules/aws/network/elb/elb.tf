@@ -10,6 +10,10 @@ variable "instance_http_port" {
   default = "81"
 }
 
+variable "access_logs_enabled" {
+  default = 0
+}
+
 variable "instance_http_port_proto" {
   default = "tcp"
 }
@@ -63,7 +67,23 @@ resource "aws_elb" "management_elb" {
     interval = 7
   }
 
+  access_logs {
+   bucket  = "${var.access_logs_enabled == "1" ? aws_s3_bucket.access_logs.id : "placeholder" }"
+    //bucket  = "nobucket"
+   enabled = "${var.access_logs_enabled}"
+  }
+
   cross_zone_load_balancing = true
+}
+
+resource "aws_s3_bucket" "access_logs" {
+    count  = "${var.access_logs_enabled}"
+    bucket = "${var.name}-elb-access-logs"
+    acl    = "private"
+
+    tags {
+      Name = "${var.name}-elb-access-logs"
+    }
 }
 
 resource "aws_proxy_protocol_policy" "management_elb_policy" {

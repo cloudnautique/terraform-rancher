@@ -26,6 +26,7 @@ module "asg" {
   scale_desired_size = "${var.scale_desired_size}"
   userdata           = "${var.use_module_userdata ? data.template_file.user_data.rendered : var.externally_defined_userdata}"
   target_group_arn   = "${var.target_group_arn}"
+  spot_enabled       = "${var.spot_enabled}"
 
   #azs                = "${var.azs}"
 
